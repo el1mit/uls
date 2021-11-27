@@ -213,56 +213,33 @@ void flag_l(t_manager** text, t_flags* flags) {
 
 
         // time
-        long int time_file;
-
+        time_t *m_time = &buf.st_mtime;
+        time_t *c_time = &buf.st_ctime;
+        time_t *a_time = &buf.st_atime;
+        
         if (flags->c) {
-            time_file = buf.st_ctimespec.tv_sec;
+            m_time = c_time;
         }
-        else if (flags->u) {
-            time_file = buf.st_atimespec.tv_sec;
-        }
-        else {
-            time_file = buf.st_mtimespec.tv_sec;
+        if (flags->u) {
+            m_time = a_time;
         }
 
-        char* str = ctime(&time_file);
-
-        if (time(NULL) - time_file < 15811200) {
-
-            for (int j = 8; j < mx_strlen(str) - 9; j++) {
-
-                if(j == 10) {
-                    mx_printstr(" ");
-                    j = 4;
-                }
-                else if (j == 7) {
-                    mx_printstr(" ");
-                    j = 11;
-                }
-
-                mx_printchar(str[j]);
+        char *str = ctime(m_time);
+        int i_i = 0;
+        if (time(NULL) - buf.st_mtime < 15811200) {
+            for (i_i = 4; i_i < 16; i_i++) {
+                mx_printchar(str[i_i]);
             }
         }
         else {
-            for (int j = 4; j < mx_strlen(str) - 1; j++) {
+            for (i_i = 4; i_i < 11; i_i++) {
+                mx_printchar(str[i_i]);
+            }
 
-                if(j == 10) {
-                    mx_printstr(" ");
-                    j = 4;
-                }
-                else if (j == 7) {
-                    mx_printstr(" ");
-                    j = 11;
-                }
-                
-                if (j == 11) {
-                    j = 20;
-                    mx_printstr(" ");
-                }
-                mx_printchar(str[j]);
+            for (i_i = 19; i_i < 24; i_i++) {
+                mx_printchar(str[i_i]);
             }
         }
-
         mx_printstr(" ");
 
         // name
@@ -307,7 +284,9 @@ void flag_l(t_manager** text, t_flags* flags) {
         }
 
         mx_printstr(text[i]->name);
-        mx_printstr(CL_END);
+        if (flags->G) {
+            mx_printstr(CL_END);
+        }
 
         if (flags->F) {
 

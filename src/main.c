@@ -28,16 +28,25 @@ static t_flags *flags_init() {
     return new;
 }
 
+static void print_one(t_manager **files) {
+    for (int i = 0; files[i]; i++) {
+        mx_printstr(files[i]->name);
+        mx_printchar('\n');
+    }   
+}
+
 void print_menu(t_manager ***files, t_flags* flags, char** argv) {
 
     sort_obj(&(*files), &flags, argv);
     if (flags->l) {
         flag_l(*files, flags);
     }
-    if (!flags->l) {
+    if (!flags->l && isatty(1)) {
         print_clean(*files, flags);
     }
-
+    if(!isatty(1) && ! flags->l) {
+        print_one(*files);
+    }
 }
 
 int main(int argc, char *argv[]) {

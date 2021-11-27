@@ -133,8 +133,10 @@ static void clean_output(t_manager **files, int max_len, int win_col, t_flags* f
             }
 
             mx_printstr(files[i]->name);
-            mx_printstr(CL_END);
-
+            if (flags->G) {
+                mx_printstr(CL_END);
+            }
+            
             if (flags->F) {
                 struct stat buf = files[i]->statistic;
                 if (buf.st_mode & S_IFDIR) {
